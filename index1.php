@@ -12,7 +12,7 @@ if($numEntries > 0) {
 	echo "<h2 id='title'><a href='viewentry.php?id=" . $row['id'] . "'>" . $row['subject'] . "</a></h2><br />";
 	echo "<p id='byline'>In <a href='viewcat.php?id=" . $row['cat_id'] . "'>" . $row['cat'] . "</a> - Posted on <span class='datetime'>" . date("D jS F Y g:iA", strtotime($row['date'])) . "</span>";
 
-	if(isset($_SESSION['USERNAME']) == true) {
+    if($session ->isLoggedIn()  == true) {
 		echo "<span id='edit'><a href='updateentry.php?id=" . $row['id'] . "'>edit</a></span>";
 	}
 	?>
