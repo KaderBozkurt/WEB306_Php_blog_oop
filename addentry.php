@@ -8,19 +8,21 @@ if(!$session ->isLoggedIn()) {
 }
 
 if(isset($_POST['submit'])) {
-	$sql = "INSERT INTO entries (cat_id,date,subject,body) VALUES(" . $_POST['cat'] . ", NOW(), '" . $_POST['subject'] . "','" . $_POST['body'] . "')";
-	mysqli_query($db, $sql);
-	mysqli_close($db);
-	header("Location: index1.php");
+	$_POST['cat'] = addslashes($_POST['cat']);
+    $_POST['subject'] = addslashes($_POST['subject']);
+    $_POST['body'] = addslashes($_POST['body']);
+    $entry = new Entry(0,$_POST['cat'], 0,$_POST['subject'], $_POST['body']);
+    $entry->create();
+    header("Location: index1.php");
+
+
 } else {
 	?>
 	<h1>Add New Entry</h1>
 	<?php
-	$catsql = "SELECT * FROM categories;";
-	$catres = mysqli_query($db, $catsql);
-	$catnum = mysqli_num_rows($catres);
-	if($catnum == 0) {
-		echo "No Categories!";
+	$categories = Category::all();
+    if(count($categories) == 0){
+        echo "No categories!";
 	} else {
 		?>
 <form action="<?php echo $_SERVER['SCRIPT_NAME']; ?>" method="post">
@@ -30,9 +32,9 @@ if(isset($_POST['submit'])) {
 			<td>
 				<select name="cat">
 					<?php
-					while($catrow = mysqli_fetch_array($catres, MYSQLI_ASSOC)) {
-						echo "<option value='" . $catrow['id'] . "'>" . $catrow['cat'] . "</option>";
-					}
+					foreach ($categories as $category){
+                        echo "<option value='" . $category->getId() . "'>" . $category->getCat() . "</option>";
+                    }
 					?>
 				</select>
 			</td>

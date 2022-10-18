@@ -5,4 +5,4 @@
 </div>
 </body>
 </html>
-<?php mysqli_close($db); ?>
+<?php //mysqli_close($db); ?>

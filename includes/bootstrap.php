@@ -5,27 +5,23 @@ require_once ('Session.php');
 require_once ('Category.php');
 require_once ('Entry.php');
 require_once ('Comment.php');*/
-require_once ('User.php');
+//require_once ('User.php');
+require_once ('config.php');
 
 
 spl_autoload_register(function ($class){
     $class=ucfirst($class);
     $ext ='.php';
-    $file = 'classes/' . $class. $ext;
-    if (is_readable(__DIR__ . $file . $class . $ext)){
-        require_once (__DIR__ . $file .$class . $ext);
+    $file = __DIR__ ."/". $class. $ext;
+    if (is_readable($file)){
+        require_once ($file);
     }
 
 
-
-//$obj = new Database();
-//$obj1 = new Session();
-$dbc = new Database();
-$session = new Session();
-
 });
 
-
+$dbc = new Database();
+$session = new Session();
 
 
 

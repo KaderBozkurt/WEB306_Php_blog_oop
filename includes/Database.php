@@ -14,8 +14,8 @@ class Database{
         $this->connection = $dbc;
     }
     public function __destruct()
-    {
-        // TODO: Implement __destruct() method.
+    {  $this->connection = null;
+
     }
     /*
      * Execute an SQL statement and return its results
@@ -41,7 +41,7 @@ class Database{
         }
     }
 }
-//$dbc = new Database();
+$dbc = new Database();
 
 
 

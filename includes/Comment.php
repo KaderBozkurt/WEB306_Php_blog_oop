@@ -29,10 +29,10 @@ class Comment{
 
     }
 
-    public function __construct($id,$blogId,$date,$name,$comment){
+    public function __construct($id,$blog_id,$date,$name,$comment){
 
         $this->id = $id;
-        $this->blogId = $blogId;
+        $this->blog_id = $blog_id;
         $this->date = $date;
         $this->name = $name;
         $this->comment = $comment;
@@ -46,7 +46,7 @@ class Comment{
             "(blog_id,date,name,comment) ".
             "VALUES (:blog_id, NOW(), :name, :comment);";
 
-        $bindVal = ['blog_id' => $this->blogId,
+        $bindVal = ['blog_id' => $this->blog_id,
                     'name' =>$this->name,
                     'comment'=>$this->comment];
 
@@ -65,7 +65,7 @@ class Comment{
     /**
      * @return mixed
      */
-    public function getBlogId()
+    public function getBlog_Id()
     {
         return $this->blog_id;
     }
@@ -106,7 +106,7 @@ class Comment{
     /**
      * @param mixed $blog_id
      */
-    public function setBlogId($blog_id)
+    public function setBlog_Id($blog_id)
     {
         $this->blog_id = $blog_id;
         return $this;

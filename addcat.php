@@ -8,9 +8,8 @@ if(!$session ->isLoggedIn()) {
 }
 
 if(isset($_POST['submit'])) {
-	$sql = "INSERT INTO categories (cat) VALUES('" . $_POST['cat'] . "')";
-	mysqli_query($db, $sql);
-	mysqli_close($db);
+	$category = new Category(0, $_POST['cat']);
+    $category->create();
 
 	header("Location: viewcat.php");
 } else {

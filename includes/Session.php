@@ -1,4 +1,8 @@
 <?php
+
+/**
+ *
+ */
 class Session{
 
 
@@ -8,7 +12,7 @@ class Session{
 
     private $user;
     public function __construct(){
-        session_start();
+        //session_start();
         if (isset($_SESSION['user'])){
             $this->user = $_SESSION['user'];
         }
@@ -19,6 +23,9 @@ class Session{
      * Returns the status of the current session
      * $return bool\User
      */
+    /**
+     * @return false|mixed
+     */
     public function isLoggedIn(){
      if($this->user){
          return $this->user;
@@ -26,6 +33,10 @@ class Session{
          return false;
      }
 }
+
+    /**
+     * @return mixed
+     */
     public function getUser(){
         return $this->user;
 
@@ -34,14 +45,22 @@ class Session{
  * Registers a logged in user object
  * @param $userObj
  */
- public function login($userObj){
+    /**
+     * @param $userObj
+     * @return void
+     */
+    public function login($userObj){
 $this->user = $userObj;
 $_SESSION['user'] = $userObj;
  }
-public function logout(){
+
+    /**
+     * @return void
+     */
+    public function logout(){
 
 }
 }
-//$session = new Session();
+$session = new Session();
 
 ?>

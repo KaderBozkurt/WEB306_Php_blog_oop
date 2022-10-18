@@ -1,83 +1,84 @@
 <?php
-require_once ('includes/bootstrap.php');
-require_once('header.php');
+require_once('includes/bootstrap.php');
 
-//require_once("config.php");
+require_once("header.php");
 
 if(!isset($_GET['id']) || !is_numeric($_GET['id'])) {
-	header("Location: index1.php");
+    header('Location: index1.php');
 }
 $validId = $_GET['id'];
 
 if(isset($_POST['submit'])) {
-	$_POST['name'] = addslashes($_POST['name']);
-	$_POST['comment'] = addslashes($_POST['comment']);
-
-	$comment = new Comment(0, $validid, 0, $_POST['name'], $_POST['comment']);
+    $_POST['name'] = addslashes($_POST['name']);
+    $_POST['comment'] = addslashes($_POST['comment']);
+    $comment = new Comment(0, $validId, 0, $_POST['name'], $_POST['comment']);
     $comment->create();
 
-	header("Location: {$_SERVER['SCRIPT_NAME']}?id=$validId");
+    header("Location: {$_SERVER['SCRIPT_NAME']}?id=$validId");
 } else {
-	$sql = "SELECT entries.*, categories.cat FROM entries, categories WHERE entries.cat_id = categories.id AND entries.id = " . $validId . " ORDER BY date DESC LIMIT 1;";
-	$result = mysqli_query($db, $sql);
-	$row = mysqli_fetch_array($result, MYSQLI_ASSOC);
 
-	echo "<h2 id='title'>" . $row['subject'] . "</h2><br>";
-	echo "<p id='byline'>In <a href='viewcat.php?id=" . $row['cat_id'] . "'>" . $row    ['cat'] . "</a> - Posted on <span class='datetime'>" . date("D jS F Y g.iA", strtotime($row    ['date'])) . "</span>";
+    $entry = Entry::find('SELECT * FROM entries WHERE id = :validId ORDER BY date DESC LIMIT 1', ['validId' => $validId]);
+    $entry = array_shift($entry);
 
-    if($session ->isLoggedIn()  == true) {
-		echo "<span id='edit'><a href='updateentry.php?id=" . $row['id'] . "'>edit</a></span>";
-	}
+    $category = Category::find('SELECT * FROM categories WHERE id = :id', ['id' => $entry->getCatId()]);
+    $category = array_shift($category);
 
-	echo "</p>";
+    echo "<h2 id='title'>" . $entry->getSubject() . '</h2><br>';
+    echo "<p id='byline'>In <a href='viewcat.php?id=" . $entry->getCatId() . "'>" . $category->getCat() . "</a> - Posted on <span class='datetime'>" . date("D jS F Y g.iA", strtotime($entry->getDate())) . "</span>";
 
-	echo "<p id='entrybody'>";
-	echo nl2br($row['body']);
-	echo "</p>";
+    if($session->isLoggedIn()) {
+        echo "<span id='edit'><a href='updateentry.php?id=" . $entry->getId() . "'>edit</a></span>";
+    }
 
+    echo "</p>";
 
-	echo "<div id='comments'>";
-	$comments = Comment::find("SELECT * FROM comments WHERE blog_id = :validId ORDER BY date DESC",['validId' => $validId]);
-
-	if(count($comments) == 0) {
-		echo "<p>No comments.</p>";
-	} else {
-	foreach($comments as $comment){
-	echo "<a name='comment" . $comment->getId . "'></a>\n";
-			echo "<p class='commenthead'>Comment by " . $comment->getName . " on " . date("D jS F Y g.iA", strtotime($comment->getDate())) . "</p>\n";
-			echo "<p class='commentbody'>" . $comment->getComment(). 
-                "</p>\n";
-			
-		}
-	}
-	echo "</div>\n";
-
-	?>
-	<div id="addcomment">
-		<h3>Leave a comment</h3>
-
-		<form action="<?php echo $_SERVER['SCRIPT_NAME'] . "?id=" . $validId; ?>" method="post">
-			<table>
-				<tr>
-					<td>Your name</td>
-					<td><input type="text" name="name"></td>
-				</tr>
-				<tr>
-					<td>Comments</td>
-					<td><textarea name="comment" rows="10" cols="50"></textarea></td>
-				</tr>
-				<tr>
-					<td></td>
-					<td><input type="submit" name="submit" value="Add comment"></td>
-				</tr>
-			</table>
-		</form>
-	</div>
+    echo "<p id='entrybody'>";
+    echo nl2br($entry->getBody());
+    echo "</p>";
 
 
-	<?php
+    echo "<div id='comments'>";
+    $comments = Comment::find("SELECT * FROM comments WHERE blog_id = :validId ORDER BY date DESC", ['validId' => $validId]);
+
+    if(count($comments) == 0) {
+        echo "<p>No comments.</p>";
+    } else {
+        foreach($comments as $comment) {
+            echo "<a name='comment" . $comment->getId() . "'></a>\n";
+            echo "<p class='commenthead'>Comment by " . $comment->getName() . ' on ' . date('D jS F Y g.iA', strtotime($comment->getDate())) . "</p>\n";
+            echo "<p class='commentbody'>" . $comment->getComment() . "</p>\n";
+        }
+    }
+    echo "</div>\n";
+
+    ?>
+    <div id='addcomment'>
+        <h3>Leave a comment</h3>
+
+        <form action="<?php echo $_SERVER['SCRIPT_NAME'] . "?id=" . $validId; ?>" method="post">
+            <table>
+                <tr>
+                    <td>Your name</td>
+                    <td><label>
+                            <input type="text" name="name">
+                        </label></td>
+                </tr>
+                <tr>
+                    <td>Comments</td>
+                    <td><label>
+                            <textarea name="comment" rows="10" cols="50"></textarea>
+                        </label></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td><input type="submit" name="submit" value="Add comment"></td>
+                </tr>
+            </table>
+        </form>
+    </div>
+
+
+    <?php
 }
-
 require_once('footer.php');
-
 ?>
